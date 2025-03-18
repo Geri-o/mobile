@@ -1,0 +1,273 @@
+<div id="controller-wrapper" ng-controller="dashboard">
+	<div class="input-modal" id="settings-modal" ng-class="{'visible-modal': modals.settings.visible}">
+		<div class="cover" ng-click="modals.settings.visible = false"></div>
+		<form novalidate>
+			<i ng-click="modals.settings.visible = false" class="far fa-xmark"></i>
+			<h4>Settings</h4>
+			<font color="red">[[errorHint]]</font>
+			<div class="modal-form-group">
+				<label for="name"><small>Owner name</small></label>
+				<input type="text" id="name" placeholder="John Doe" ng-model="owner.name">
+			</div>
+			<div class="modal-form-group">
+				<label for="login"><small>Login</small></label>
+				<input type="text" id="login" placeholder="john" ng-model="owner.email" disabled>
+			</div>
+			<div class="modal-form-group">
+				<button ng-click="editOwner()">
+					<span ng-hide="loading">Save</span>
+					<i ng-show="loading" class="far fa-spinner-third fa-spin"></i>
+				</button>
+			</div>
+			<hr>
+			<h4>Reset password</h4>
+			<div class="modal-form-group">
+				<label for="old"><small>Current password</small></label>
+				<input type="password" id="old" placeholder="******" ng-model="inputs.settings.old">
+			</div>
+			<div class="modal-form-group">
+				<label for="new"><small>New password</small></label>
+				<input type="password" id="new" placeholder="******" ng-model="inputs.settings.new">
+			</div>
+			<div class="modal-form-group">
+				<button ng-click="resetPassword()">
+					<span ng-hide="loading">Reset</span>
+					<i ng-show="loading" class="far fa-spinner-third fa-spin"></i>
+				</button>
+			</div>
+		</form>
+	</div>
+
+	<section id="loading-screen" ng-if="loading">
+		<div class="spinner-container">
+			<span><i class="fas fa-spinner-third fa-spin"></i>&ensp;[[loadingHint]]...</span>
+		</div>
+	</section>
+	<div class="sidebar">
+		<h3><i class="far fa-gamepad-modern"></i>&ensp;iCafePlay Panel</h3>
+		<ul ng-hide="owner.is_root">
+			<li ng-repeat="menu in menus" ng-show="menu.is_ready == owner.is_ready || menu.visible"><a href="#![[menu.route]]" ng-class="{'active-menu': menu.controller == controllerName}"><i class="[[menu.icon]]"></i>[[menu.name]]</a></li>
+		</ul>
+		<ul ng-show="owner.is_root">
+			<li ng-repeat="menu in superMenus" ng-show="menu.is_root"><a href="#![[menu.route]]" ng-class="{'active-menu': menu.controller == controllerName}"><i class="[[menu.icon]]"></i>[[menu.name]]</a></li>
+		</ul>
+	</div>
+	<div class="content">
+		<nav>
+			<h3><i class="fas fa-grid-2"></i>&ensp;Dashboard</h3>
+			<div class="trailing">
+				<span><i class="far fa-user"></i>&emsp;[[owner.name]]</span>
+				<button ng-click="modals.settings.visible = true" class="plain-button"><i class="far fa-cog"></i></button>
+				<button ng-click="logout(owner)"><i class="far fa-power-off"></i>&emsp;Logout</button>
+			</div>
+		</nav>
+		<section ng-hide="owner.is_ready">
+			<div class="popup-wrapper">
+				<h3>Getting Started</h3>
+				<i class="far fa-question-circle trigger"></i>
+				<div class="hint">
+					<p>Welcome to iCafePlay, please follow instructions below to setup your cafe.</p>
+				</div>
+			</div>
+			<small>iCafePlay will do all the work, just enter the API Token and Cafe ID.</small>
+			<form novalidate class="form-double">
+				<div class="input-column-group">
+					<label for="cafeID">Cafe ID</label>
+					<input type="text" id="cafeID" placeholder="ID" ng-model="inputs.start.cafeid" ng-class="{'error-input': inputs.start.cafeid.length == 0}">
+				</div>
+				<div class="input-column-group">
+					<label for="token">API Token</label>
+					<input type="text" id="token" placeholder="Token" ng-model="inputs.start.token" ng-class="{'error-input': inputs.start.token.length == 0}">
+				</div>
+			</form>
+			<div class="action-container">
+				<button ng-disabled="center != undefined" ng-click="demandCenter()"><i class="far fa-rotate"></i>&ensp;Synchronize</button>
+			</div>
+		</section>
+		<section ng-hide="center == undefined">
+			<div class="meta-title">
+				<h3>Center overview</h3>
+				<small>Step 1/3</small>
+			</div>
+			<small>Overall information about your center, received from iCafe.</small>
+			<form novalidate class="form-tripple">
+				<div class="input-column-group">
+					<label for="center-name">Cafe name</label>
+					<input type="text" id="center-name" placeholder="iCafe Gaming" ng-model="center.display_name">
+				</div>
+				<div class="input-column-group">
+					<label for="center-number">License number</label>
+					<input type="text" id="center-number" placeholder="xxxxxxxx" ng-model="center.license_number" disabled>
+				</div>
+				<div class="input-column-group">
+					<label for="center-count">PCs count</label>
+					<input type="text" id="center-count" placeholder="0" ng-model="center.computer_count" disabled>
+				</div>
+				<div class="input-row-group">
+					<small>Active</small>
+					<label class="switch">
+						<input ng-model="center.is_active" type="checkbox">
+						<span class="switch-slider"></span>
+					</label>
+				</div>
+				<div class="input-row-group">
+					<small>Allow Topups</small>
+					<label class="switch">
+						<input ng-model="center.allow_topup" type="checkbox">
+						<span class="switch-slider"></span>
+					</label>
+				</div>
+				<div class="input-row-group">
+					<small>Allow booking</small>
+					<label class="switch">
+						<input ng-model="center.allow_booking" type="checkbox">
+						<span class="switch-slider"></span>
+					</label>
+				</div>
+			</form>
+			<hr>
+			<div class="meta-title">
+				<h3>Products</h3>
+				<small>Step 2/3</small>
+			</div>
+			<div class="popup-wrapper">
+				<small>Select which Products will be displayed on your center's page in application.</small>
+				<i class="far fa-question-circle trigger"></i>
+				<div class="hint">
+					<p>You can control how they will be displayed by editing their names.</p>
+				</div>
+			</div>
+			<pre ng-show="center.products.length == 0">You do not have any Products specified in iCafe system, try adding some.</pre>
+			<form novalidate class="form-tripple" ng-hide="center.products.length == 0">
+				<div ng-repeat="product in center.products track by $index" class="input-row-group input-combination-group">
+					<input type="text" placeholder="Group" ng-model="product.display_name" class="primary-input" ng-class="{'error-input': product.display_name.length == 0}">
+					<label class="switch">
+						<input ng-model="product.is_visible" type="checkbox">
+						<span class="switch-slider"></span>
+					</label>
+				</div>
+			</form>
+			<hr>
+			<div class="meta-title">
+				<h3>Subcafes</h3>
+				<small>Step 3/3</small>
+			</div>
+			<div class="popup-wrapper">
+				<small>Select which Subcafes will be included to your account.</small>
+				<i class="far fa-question-circle trigger"></i>
+				<div class="hint">
+					<p>You can configure them later in "Subcenters" section.</p>
+				</div>
+			</div>
+			<pre ng-show="center.subcenters.length == 0">You do not have any Subcafes specified in iCafe system, try adding some.</pre>
+			<form novalidate class="form-tripple" ng-hide="center.subcenters.length == 0">
+				<div ng-repeat="center in center.subcenters track by $index" class="input-row-group">
+					<small>[[center.name]]</small>
+					<label class="switch">
+						<input ng-model="center.include" type="checkbox">
+						<span class="switch-slider"></span>
+					</label>
+				</div>
+			</form>
+		</section>
+		<section ng-hide="center == undefined">
+			<div class="meta-title">
+				<h3>Sum up</h3>
+			</div>
+			<small>Pressing the button you are agree with the Terms and Conditions of using our service.</small>
+			<div class="action-container">
+				<button ng-disabled="center == undefined" ng-click="createCenter()">
+					<i ng-if="!loading" class="far fa-floppy-disk">&ensp;</i>
+					<i ng-if="loading" class="far fa-spinner-third fa-spin">&ensp;</i>
+					Save
+				</button>
+			</div>
+		</section>
+		<section ng-hide="owner.center == undefined">
+			<div class="dashboard-title">
+				<h2>General Stats</h2>
+			</div>
+			<div class="dashboard-cards-container">
+				<div class="dashboard-card">
+					<h2>[[bookings.length]]</h2>
+					<p>Bookings</p>
+					<a href="#!/bookings">Go to bookings&ensp;<i class="far fa-arrow-up-right-from-square"></i></a>
+				</div>
+				<div class="dashboard-card">
+					<h2>[[members.length]]</h2>
+					<p>Member accounts</p>
+					<a href="#!/members">Go to members&ensp;<i class="far fa-arrow-up-right-from-square"></i></a>
+				</div>
+				<div class="dashboard-card">
+					<h2>[[epsilonRounding(relations.reports.data.topup.amount)]]</h2>
+					<p>Total amount from [[relations.reports.data.topup.number]] topups</p>
+					<a href="javascript:void(0)">Data is from iCafe&ensp;<i class="far fa-arrow-up-right-from-square"></i></a>
+				</div>
+				<div class="dashboard-card">
+					<h2>[[epsilonRounding(relations.reports.data.income.profit)]]</h2>
+					<p>Current shift profit</p>
+					<a href="javascript:void(0)">Data is from iCafe&ensp;<i class="far fa-arrow-up-right-from-square"></i></a>
+				</div>
+			</div>
+			<hr>
+			<div class="dashboard-title">
+				<h2>Reports</h2>
+				<div class="trailing">
+					<input type="date" ng-model="inputs.report.startDate" ng-change="fetchReportData()" class="primary-input">
+					<span>-</span>
+					<input type="date" ng-model="inputs.report.endDate" ng-change="fetchReportData()" class="primary-input">
+				</div>
+			</div>
+			<div class="charts-container">
+				<div class="chart" id="chart-top-topups"></div>
+				<div class="chart" id="chart-top-pcs"></div>
+			</div>
+			<table>
+				<tr>
+					<th width="200">Source</th>
+					<th width="200">Amount</th>
+				</tr>
+				<tr>
+					<td>Expenses</td>
+					<td>[[epsilonRounding(relations.reports.data.income.expense.amount)]]</td>
+				</tr>
+				<tr>
+					<td>Cash</td>
+					<td>[[epsilonRounding(relations.reports.data.income.cash)]]</td>
+				</tr>
+				<tr>
+					<td>Credit card</td>
+					<td>[[epsilonRounding(relations.reports.data.income.credit_card)]]</td>
+				</tr>
+				<tr>
+					<td>By balance</td>
+					<td>[[epsilonRounding(relations.reports.data.income.by_balance)]]</td>
+				</tr>
+				<tr>
+					<td>Coins</td>
+					<td>[[epsilonRounding(relations.reports.data.income.coin)]]</td>
+				</tr>
+				<tr>
+					<td>Sum before taxes</td>
+					<td>[[epsilonRounding(relations.reports.data.income.amount)]]</td>
+				</tr>
+				<tr>
+					<td>Cost</td>
+					<td>[[epsilonRounding(relations.reports.data.income.cost)]]</td>
+				</tr>
+				<tr>
+					<td>Taxes</td>
+					<td>[[epsilonRounding(relations.reports.data.income.tax)]]</td>
+				</tr>
+				<tr>
+					<td>Profit</td>
+					<td>[[epsilonRounding(relations.reports.data.income.profit)]]</td>
+				</tr>
+				<tr>
+					<td>Loan</td>
+					<td>[[epsilonRounding(relations.reports.data.income.loan)]]</td>
+				</tr>
+			</table>
+		</section>
+	</div>
+</div>

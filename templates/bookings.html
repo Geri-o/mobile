@@ -1,0 +1,50 @@
+<div id="controller-wrapper" ng-controller="bookings">
+	<section id="loading-screen" ng-if="loading">
+		<div class="spinner-container">
+			<span><i class="fas fa-spinner-third fa-spin"></i>&ensp;[[loadingHint]]...</span>
+		</div>
+	</section>
+	<div class="sidebar">
+		<h3><i class="far fa-gamepad-modern"></i>&ensp;iCafePlay Panel</h3>
+		<ul>
+			<li ng-repeat="menu in menus" ng-show="menu.is_ready == owner.is_ready || menu.visible"><a href="#![[menu.route]]" ng-class="{'active-menu': menu.controller == controllerName}"><i class="[[menu.icon]]"></i>[[menu.name]]</a></li>
+		</ul>
+	</div>
+	<div class="content">
+		<nav>
+			<h3><i class="fas fa-calendar-users"></i>&ensp;Bookings</h3>
+			<div class="trailing">
+				<span><i class="far fa-user"></i>&emsp;[[owner.name]]</span>
+				<button ng-click="logout(owner)"><i class="far fa-power-off"></i>&emsp;Logout</button>
+			</div>
+		</nav>
+		<section>
+			<div class="meta-title">
+				<h3>List of active bookings</h3>
+			</div>
+			<small>Relevant by: [[today]]</small>
+			<table>
+				<tr>
+					<th width="10">Cancel</th>
+					<th width="200">ID</th>
+					<th width="200">Computer</th>
+					<th width="200">From</th>
+					<th width="200">To</th>
+					<th width="200">Minutes</th>
+					<th width="200">Comment</th>
+					<th width="200">Customer</th>
+				</tr>
+				<tr ng-repeat="booking in bookings">
+					<td class="action-cell"><i ng-click="cancelBooking(booking)" class="far fa-xmark"></i></td>
+					<td>[[booking.product_id]]</td>
+					<td>[[booking.product_pc_name]]</td>
+					<td>[[booking.product_available_date_local_from]]</td>
+					<td>[[booking.product_available_date_local_to]]</td>
+					<td>[[booking.product_mins]]</td>
+					<td>[[booking.product_description]]</td>
+					<td>[[booking.member_account]]</td>
+				</tr>
+			</table>
+		</section>
+	</div>
+</div>

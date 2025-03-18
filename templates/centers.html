@@ -1,0 +1,50 @@
+<div id="controller-wrapper" ng-controller="centers">
+	<section id="loading-screen" ng-if="loading">
+		<div class="spinner-container">
+			<span><i class="fas fa-spinner-third fa-spin"></i>&ensp;[[loadingHint]]...</span>
+		</div>
+	</section>
+	<div class="sidebar">
+		<h3><i class="far fa-gamepad-modern"></i>&ensp;iCafePlay Panel</h3>
+		<ul ng-show="superuser.is_root">
+			<li ng-repeat="menu in superMenus" ng-show="menu.is_root"><a href="#![[menu.route]]" ng-class="{'active-menu': menu.controller == controllerName}"><i class="[[menu.icon]]"></i>[[menu.name]]</a></li>
+		</ul>
+	</div>
+	<div class="content">
+		<nav>
+			<h3><i class="fas fa-building-flag"></i>&ensp;Centers</h3>
+			<div class="trailing">
+				<span><i class="far fa-user"></i>&emsp;[[superuser.name]]</span>
+				<button ng-click="logout(superuser)"><i class="far fa-power-off"></i>&emsp;Logout</button>
+			</div>
+		</nav>
+		<section>
+			<div class="meta-title">
+				<h3>List of all centers</h3>
+			</div>
+			<table class="centered-table">
+				<tr>
+					<th width="200">ID</th>
+					<th width="200">Name</th>
+					<th width="200">Display name</th>
+					<th width="200">Owner</th>
+					<th width="200">Active</th>
+					<th width="200">Country</th>
+					<th width="200">PC count</th>
+					<th width="200">License</th>
+				</tr>
+				<tr ng-repeat="center in centers | orderBy: '-center_id'">
+					<td>[[center.center_id]]</td>
+					<td>[[center.name]]</td>
+					<td>[[center.display_name]]</td>
+					<td>[[center.owner.name]]</td>
+					<td class="action-cell" ng-show="center.is_active" ng-click="alterActivation(center, false)"><i class="far fa-check"></i></td>
+					<td class="action-cell" ng-hide="center.is_active" ng-click="alterActivation(center, true)"><i class="far fa-xmark"></i></td>
+					<td>[[center.country.name]]</td>
+					<td>[[center.computer_count]]</td>
+					<td>[[center.license_number]]</td>
+				</tr>
+			</table>
+		</section>
+	</div>
+</div>

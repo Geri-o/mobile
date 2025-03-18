@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html translate="no" lang="en">
+<head>
+	<meta name="google-adsense-account" content="ca-pub-7029269978291208">
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>iCafePlay | Dashboard</title>
+	<link rel="icon" href="{{ url_for('static', path = '/icon.png') }}">
+	<link rel="stylesheet" href="{{ url_for('static', path = '/style.css') }}">
+
+	<link href="https://kit-pro.fontawesome.com/releases/v6.5.2/css/pro.min.css" rel="stylesheet">
+
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Inter&display=swap" rel="stylesheet">
+
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular-route.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+
+	<script src="{{ url_for('static', path = '/engine.js') }}"></script>
+	<script src="{{ url_for('static', path = '/controllers.js') }}"></script>
+</head>
+<body>
+	<div ng-app="root" ng-controller="master">
+		<div id="notification-bar" ng-click="dismissNotifiction()" ng-class="{'show-notification-bar': notificationSystem.visible}">
+			<div id="notification-card" ng-class="{'success-notification-card': notificationSystem.success == true, 'fail-notification-card': notificationSystem.success == false}" ng-click="dismissNotifiction()">
+				<i class="far" ng-class="{'fa-circle-check': notificationSystem.success == true, 'fa-circle-exclamation': notificationSystem.success == false}"></i>
+				<p>[[notificationSystem.message]]</p>
+			</div>
+		</div>
+		<ng-view></ng-view>
+	</div>
+</body>
+</html>

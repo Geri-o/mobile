@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>iCafePlay - Transaction is successful</title>
+	<link rel="icon" href="{{ url_for('static', path = '/icon.png') }}">
+
+	<link href="https://kit-pro.fontawesome.com/releases/v6.5.2/css/pro.min.css" rel="stylesheet">
+
+	<style>
+		body{
+			margin: 0;
+			padding: 0;
+		}
+		#container{
+			width: 100vw;
+			height: 100vh;
+			background: white;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+			font-family: sans-serif;
+			text-align: center;
+		}
+		#container form{
+			height: 100%;
+			display: flex;
+			flex-direction: column;
+			padding: 10% 2vw;
+			align-items: center;
+		}
+		#container form i{
+			font-size: 10vh;
+			color: green;
+		}
+		#container form img{
+			margin-top: auto;
+			width: 30%;
+			border-radius: 10px;
+		}
+		#container form strong{
+			margin-top: 1vh;
+		}
+		@media only screen and (max-width: 480px) {
+			#container form{
+				padding: 20% 2vw;
+				padding-top: 40%;
+			}
+		}
+	</style>
+</head>
+<body>
+	<div id="container">
+		<form>
+			<i class="far fa-check-circle"></i>
+			<h1>Transaction is successfull!</h1>
+			<small>You may safely close this window.<br>Go back to application.</small>
+			<img src="{{ url_for('static', path = '/icon.png') }}">
+			<strong>iCafePlay</strong>
+		</form>
+	</div>
+</body>
+</html>

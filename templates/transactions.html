@@ -1,0 +1,85 @@
+<div id="controller-wrapper" ng-controller="transactions">
+	<section id="loading-screen" ng-if="loading">
+		<div class="spinner-container">
+			<span><i class="fas fa-spinner-third fa-spin"></i>&ensp;[[loadingHint]]...</span>
+		</div>
+	</section>
+	<div class="sidebar">
+		<h3><i class="far fa-gamepad-modern"></i>&ensp;iCafePlay Panel</h3>
+		<ul>
+			<li ng-repeat="menu in menus" ng-show="menu.is_ready == owner.is_ready || menu.visible"><a href="#![[menu.route]]" ng-class="{'active-menu': menu.controller == controllerName}"><i class="[[menu.icon]]"></i>[[menu.name]]</a></li>
+		</ul>
+	</div>
+	<div class="content">
+		<nav>
+			<h3><i class="fas fa-receipt"></i>&ensp;Transactions</h3>
+			<div class="trailing">
+				<span><i class="far fa-user"></i>&emsp;[[owner.name]]</span>
+				<button ng-click="logout(owner)"><i class="far fa-power-off"></i>&emsp;Logout</button>
+			</div>
+		</nav>
+		<section>
+			<div class="meta-title">
+				<h3>Payment gateway settings</h3>
+			</div>
+			<small>Set up payment processors to accept payments.</small>
+			<form novalidate class="form-double">
+				<div class="input-column-group">
+					<label for="payme-cashbox-id">Payme cashbox ID</label>
+					<input type="text" id="payme-cashbox-id" placeholder="ID" ng-model="owner.center.payme_cashbox_id">
+				</div>
+				<div class="input-column-group">
+					<label for="payme-cashbox-key">Payme cashbox key</label>
+					<input type="text" id="payme-cashbox-key" placeholder="Key" ng-model="owner.center.payme_cashbox_key">
+				</div>
+			</form>
+			<form novalidate class="form-double">
+				<div class="input-column-group">
+					<label for="yookassa-shop-id">Yookassa shop ID</label>
+					<input type="text" id="yookassa-shop-id" placeholder="ID" ng-model="owner.center.yookassa_shop_id">
+				</div>
+				<div class="input-column-group">
+					<label for="yookassa-api-key">Yookassa secret key</label>
+					<input type="text" id="yookassa-api-key" placeholder="Key" ng-model="owner.center.yookassa_api_key">
+				</div>
+			</form>
+			<form novalidate class="form-double">
+				<div class="input-column-group">
+					<label for="kaspi-bin-id">Kaspi bin number</label>
+					<input type="text" id="kaspi-bin-id" placeholder="Bin ID" ng-model="owner.center.kaspi_bin">
+				</div>
+			</form>
+			<div class="action-container">
+				<button ng-disabled="loading" ng-click="editCenter()">
+					<i ng-if="!loading" class="far fa-floppy-disk">&ensp;</i>
+					<i ng-if="loading" class="far fa-spinner-third fa-spin">&ensp;</i>
+					Save
+				</button>
+			</div>
+		</section>
+		<section>
+			<div class="meta-title">
+				<h3>List of transactions</h3>
+			</div>
+			<small>Transactions from all sources</small>
+			<table>
+				<tr>
+					<th width="200">ID</th>
+					<th width="200">Amount</th>
+					<th width="200">Date</th>
+					<th width="200">Processor</th>
+					<th width="200">Member</th>
+					<th width="200">Status</th>
+				</tr>
+				<tr ng-repeat="transaction in transactions">
+					<td>[[transaction.transaction_id]]</td>
+					<td>[[transaction.amount]]</td>
+					<td>[[transaction.created_date]]</td>
+					<td>[[transaction.processor_name]]</td>
+					<td>[[transaction.icafe_member_account]]</td>
+					<td>[[transaction.status]]</td>
+				</tr>
+			</table>
+		</section>
+	</div>
+</div>

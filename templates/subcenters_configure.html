@@ -1,0 +1,171 @@
+<div id="controller-wrapper" ng-controller="subcenters">
+	<section id="loading-screen" ng-if="loading">
+		<div class="spinner-container">
+			<span><i class="fas fa-spinner-third fa-spin"></i>&ensp;[[loadingHint]]...</span>
+		</div>
+	</section>
+	<div class="sidebar">
+		<h3><i class="far fa-gamepad-modern"></i>&ensp;iCafePlay Panel</h3>
+		<ul>
+			<li ng-repeat="menu in menus" ng-show="menu.is_ready == owner.is_ready || menu.visible"><a href="#![[menu.route]]" ng-class="{'active-menu': menu.controller == controllerName}"><i class="[[menu.icon]]"></i>[[menu.name]]</a></li>
+		</ul>
+	</div>
+	<div class="content">
+		<nav>
+			<h3><i class="fas fa-building-flag"></i>&ensp;Subcenter - [[subcenter.display_name]]</h3>
+			<div class="trailing">
+				<span><i class="far fa-user"></i>&emsp;[[owner.name]]</span>
+				<button ng-click="logout(owner)"><i class="far fa-power-off"></i>&emsp;Logout</button>
+			</div>
+		</nav>
+		<section ng-hide="subcenter.configured">
+			<div class="popup-wrapper">
+				<h3>Your subcenter is not configured yet</h3>
+				<i class="far fa-question-circle trigger"></i>
+				<div class="hint">
+					<p>Please follow instructions below to configure your cafe.</p>
+				</div>
+			</div>
+			<small>iCafePlay will do all the work, just enter the API Token and Cafe ID.</small>
+			<form novalidate class="form-double">
+				<div class="input-column-group">
+					<label for="cafeID">Cafe ID</label>
+					<input type="text" id="cafeID" placeholder="ID" ng-model="subcenter.cafe_id" ng-class="{'error-input': subcenter.cafe_id.length == 0}">
+				</div>
+				<div class="input-column-group">
+					<label for="api_token">API Token</label>
+					<input type="text" id="api_token" placeholder="Token" ng-model="subcenter.api_token" ng-class="{'error-input': subcenter.api_token.length == 0}">
+				</div>
+			</form>
+			<div class="action-container">
+				<button ng-disabled="center != undefined" ng-click="demandCenter()"><i class="far fa-rotate"></i>&ensp;Synchronize</button>
+			</div>
+		</section>
+		<section ng-show="subcenter.configured">
+			<div class="meta-title">
+				<h3>Center overview</h3>
+				<small>Step 1/5</small>
+			</div>
+			<small>Overall information about your center, received from iCafe.</small>
+			<form novalidate class="form-tripple">
+				<div class="input-column-group">
+					<label for="center-name">Cafe name</label>
+					<input type="text" id="center-name" placeholder="iCafe Gaming" ng-model="subcenter.display_name">
+				</div>
+				<div class="input-column-group">
+					<label for="center-number">License number</label>
+					<input type="text" id="center-number" placeholder="xxxxxxxx" ng-model="subcenter.license_number" disabled>
+				</div>
+				<div class="input-column-group">
+					<label for="center-count">PCs count</label>
+					<input type="text" id="center-count" placeholder="0" ng-model="subcenter.computer_count" disabled>
+				</div>
+				<div class="input-row-group">
+					<small>Active</small>
+					<label class="switch">
+						<input ng-model="subcenter.is_active" type="checkbox">
+						<span class="switch-slider"></span>
+					</label>
+				</div>
+				<div class="input-row-group">
+					<small>Allow Topups</small>
+					<label class="switch">
+						<input ng-model="subcenter.allow_topup" type="checkbox">
+						<span class="switch-slider"></span>
+					</label>
+				</div>
+				<div class="input-row-group">
+					<small>Allow booking</small>
+					<label class="switch">
+						<input ng-model="subcenter.allow_booking" type="checkbox">
+						<span class="switch-slider"></span>
+					</label>
+				</div>
+			</form>
+			<hr>
+			<div class="meta-title">
+				<h3>PC groups</h3>
+				<small>Step 2/5</small>
+			</div>
+			<div class="popup-wrapper">
+				<small>Select which PC groups will be displayed on your center's page in application.</small>
+				<i class="far fa-question-circle trigger"></i>
+				<div class="hint">
+					<p>You can control how they will be displayed by editing their names.</p>
+				</div>
+			</div>
+			<pre ng-show="subcenter.pc_groups.length == 0"><i class="far fa-empty-set"></i>&ensp;You do not have any PC groups specified in iCafe system, try adding some.</pre>
+			<form novalidate class="form-tripple" ng-hide="subcenter.pc_groups.length == 0">
+				<div ng-repeat="pcGroup in subcenter.pc_groups track by $index" class="input-row-group input-combination-group">
+					<input type="text" placeholder="Group" ng-model="pcGroup.display_name" class="primary-input" ng-class="{'error-input': pcGroup.display_name.length == 0}">
+					<label class="switch">
+						<input ng-model="pcGroup.is_visible" type="checkbox">
+						<span class="switch-slider"></span>
+					</label>
+				</div>
+			</form>
+			<hr>
+			<div class="meta-title">
+				<h3>Member groups</h3>
+				<small>Step 3/5</small>
+			</div>
+			<div class="popup-wrapper">
+				<small>Select which Member groups will be displayed on your center's page in application.</small>
+				<i class="far fa-question-circle trigger"></i>
+				<div class="hint">
+					<p>You can control how they will be displayed by editing their names.</p>
+				</div>
+			</div>
+			<pre ng-show="subcenter.member_groups.length == 0">You do not have any Member groups specified in iCafe system, try adding some.</pre>
+			<form novalidate class="form-tripple" ng-hide="subcenter.member_groups.length == 0">
+				<div ng-repeat="memberGroup in subcenter.member_groups track by $index" class="input-row-group input-combination-group">
+					<input type="text" placeholder="Group" ng-model="memberGroup.display_name" class="primary-input" ng-class="{'error-input': memberGroup.display_name.length == 0}">
+					<label class="switch">
+						<input ng-model="memberGroup.is_visible" type="checkbox">
+						<span class="switch-slider"></span>
+					</label>
+				</div>
+			</form>
+			<hr>
+			<div class="meta-title">
+				<h3>Products</h3>
+				<small>Step 4/5</small>
+			</div>
+			<div class="popup-wrapper">
+				<small>Select which Products will be displayed on your center's page in application.</small>
+				<i class="far fa-question-circle trigger"></i>
+				<div class="hint">
+					<p>You can control how they will be displayed by editing their names.</p>
+				</div>
+			</div>
+			<pre ng-show="subcenter.products.length == 0">You do not have any Products specified in iCafe system, try adding some.</pre>
+			<form novalidate class="form-tripple" ng-hide="subcenter.products.length == 0">
+				<div ng-repeat="product in subcenter.products track by $index" class="input-row-group input-combination-group">
+					<input type="text" placeholder="Group" ng-model="product.display_name" class="primary-input" ng-class="{'error-input': product.display_name.length == 0}">
+					<label class="switch">
+						<input ng-model="product.is_visible" type="checkbox">
+						<span class="switch-slider"></span>
+					</label>
+				</div>
+			</form>
+			<hr>
+			<div class="action-container">
+				<button ng-disabled="loading" ng-click="">
+					<i ng-if="!loading" class="far fa-rotate">&ensp;</i>
+					<i ng-if="loading" class="far fa-spinner-third fa-spin">&ensp;</i>
+					Synchronize
+				</button>
+				<button ng-hide="inProgress" ng-disabled="loading" ng-click="editCenter(subcenter)">
+					<i ng-if="!loading" class="far fa-floppy-disk">&ensp;</i>
+					<i ng-if="loading" class="far fa-spinner-third fa-spin">&ensp;</i>
+					Save
+				</button>
+				<button ng-show="inProgress" ng-disabled="loading" ng-click="editSubcenter()">
+					<i ng-if="!loading" class="far fa-floppy-disk">&ensp;</i>
+					<i ng-if="loading" class="far fa-spinner-third fa-spin">&ensp;</i>
+					Save
+				</button>
+			</div>
+		</section>
+	</div>
+</div>

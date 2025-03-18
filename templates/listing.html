@@ -1,0 +1,173 @@
+<div id="controller-wrapper" ng-controller="listing">
+	<section id="loading-screen" ng-if="loading">
+		<div class="spinner-container">
+			<span><i class="fas fa-spinner-third fa-spin"></i>&ensp;[[loadingHint]]...</span>
+		</div>
+	</section>
+	<div class="sidebar">
+		<h3><i class="far fa-gamepad-modern"></i>&ensp;iCafePlay Panel</h3>
+		<ul>
+			<li ng-repeat="menu in menus" ng-show="menu.is_ready == owner.is_ready || menu.visible"><a href="#![[menu.route]]" ng-class="{'active-menu': menu.controller == controllerName}"><i class="[[menu.icon]]"></i>[[menu.name]]</a></li>
+		</ul>
+	</div>
+	<div class="content">
+		<nav>
+			<h3><i class="fas fa-window-maximize"></i>&ensp;Listing</h3>
+			<div class="trailing">
+				<span><i class="far fa-user"></i>&emsp;[[owner.name]]</span>
+				<button ng-click="logout(owner)"><i class="far fa-power-off"></i>&emsp;Logout</button>
+			</div>
+		</nav>
+		<section>
+			<div class="meta-title">
+				<h3>Center overview</h3>
+				<small>Step 1/4</small>
+			</div>
+			<small>Overall information about your center, some of them received received directly from iCafe.</small>
+			<form novalidate class="form-tripple">
+				<div class="input-column-group">
+					<label for="center-id">Cafe ID</label>
+					<input type="text" id="center-id" placeholder="xxxxxxxxx" ng-model="owner.center.cafe_id" disabled>
+				</div>
+				<div class="input-column-group">
+					<label for="center-api-token">API Token</label>
+					<input type="text" id="center-api-token" placeholder="Token" ng-model="owner.center.api_token">
+				</div>
+				<div class="input-column-group"></div>
+				<div class="input-column-group">
+					<label for="center-name">Cafe name</label>
+					<input type="text" id="center-name" placeholder="iCafe Gaming" ng-model="owner.center.display_name">
+				</div>
+				<div class="input-column-group">
+					<label for="center-license">License number</label>
+					<input type="text" id="center-license" placeholder="xxxxxxxxx" ng-model="owner.center.license_number" disabled>
+				</div>
+				<div class="input-column-group">
+					<label for="center-count">PCs count</label>
+					<input type="text" id="center-count" placeholder="0" ng-model="owner.center.computer_count" disabled>
+				</div>
+				<div class="input-column-group">
+					<label for="center-description">Cafe description</label>
+					<input type="text" id="center-description" placeholder="Perfect place for gaming!" ng-model="owner.center.description">
+				</div>
+				<div class="input-column-group">
+					<label for="center-phone">Cafe phone number</label>
+					<input type="text" id="center-phone" placeholder="+xxxxxxxxx" ng-model="owner.center.phone_number">
+				</div>
+				<div class="input-column-group">
+					<label for="center-address">Cafe address</label>
+					<input type="text" id="center-address" placeholder="Address" ng-model="owner.center.address">
+				</div>
+				<div class="input-row-group">
+					<small>Active</small>
+					<label class="switch">
+						<input ng-model="owner.center.is_active" type="checkbox">
+						<span class="switch-slider"></span>
+					</label>
+				</div>
+				<div class="input-row-group">
+					<small>Allow Topups</small>
+					<label class="switch">
+						<input ng-model="owner.center.allow_topup" type="checkbox" ng-disabled="!owner.center.allow_topup_uz && !owner.center.allow_topup_ru && !owner.center.allow_topup_kz">
+						<span class="switch-slider"></span>
+					</label>
+				</div>
+				<div class="input-row-group">
+					<small>Allow booking</small>
+					<label class="switch">
+						<input ng-model="owner.center.allow_booking" type="checkbox">
+						<span class="switch-slider"></span>
+					</label>
+				</div>
+			</form>
+			<hr>
+			<div class="meta-title">
+				<h3>Zones</h3>
+				<small>Step 2/4</small>
+			</div>
+			<div class="popup-wrapper">
+				<small>Configure zones to show your customers what gear you have.</small>
+				<i class="far fa-question-circle trigger"></i>
+				<div class="hint">
+					<p>Add or remove zones, please provide only real data. Do not rigg specs!</p>
+				</div>
+			</div>
+			<button class="section-button" ng-click="pushCenterZone()"><i class="far fa-plus"></i>&ensp;Add</button>
+			<pre ng-show="owner.center.zones.length == 0">You do not have any specs yet, try adding some.</pre>
+			<form novalidate class="form-single" ng-hide="owner.center.zones.length == 0">
+				<div ng-repeat="zone in owner.center.zones track by $index" class="input-row-grid">
+					<div class="input-column-group">
+						<label for="zone-name-[[$index]]">Zone name</label>
+						<input type="text" id="zone-name-[[$index]]" placeholder="Premium" ng-model="zone.name">
+					</div>
+					<div class="input-column-group">
+						<label for="zone-description-[[$index]]">Zone description</label>
+						<input type="text" id="zone-description-[[$index]]" placeholder="Good option for solo gamers" ng-model="zone.description">
+					</div>
+					<div class="input-column-group">
+						<label for="zone-specifications-[[$index]]">Zone specifications</label>
+						<input type="text" id="zone-specifications-[[$index]]" placeholder="Intel Core i7, RTX 4080 16GB, DDR5 32GB RAM" ng-model="zone.specifications">
+					</div>
+					<div class="input-column-group">
+						<label for="zone-computer-count-[[$index]]">Zone PC count</label>
+						<input type="number" id="zone-computer-count-[[$index]]" placeholder="0" ng-model="zone.computer_count">
+					</div>
+					<div class="input-column-group">
+						<label>&ensp;</label>
+						<button ng-click="popCenterZone(zone)"><i class="far fa-trash-can"></i></button>
+					</div>
+				</div>
+			</form>
+			<hr>
+			<div class="meta-title">
+				<h3>Products</h3>
+				<small>Step 3/4</small>
+			</div>
+			<div class="popup-wrapper">
+				<small>Select which Products will be displayed on your center's page in application.</small>
+				<i class="far fa-question-circle trigger"></i>
+				<div class="hint">
+					<p>You can control how they will be displayed by editing their names.</p>
+				</div>
+			</div>
+			<pre ng-show="owner.center.products.length == 0">You do not have any Products specified in iCafe system, try adding some.</pre>
+			<form novalidate class="form-tripple" ng-hide="owner.center.products.length == 0">
+				<div ng-repeat="product in owner.center.products track by $index" class="input-row-group input-combination-group">
+					<input type="text" placeholder="Group" ng-model="product.display_name" class="primary-input" ng-class="{'error-input': product.display_name.length == 0}">
+					<label class="switch">
+						<input ng-model="product.is_visible" type="checkbox">
+						<span class="switch-slider"></span>
+					</label>
+				</div>
+			</form>
+			<hr>
+			<div class="meta-title">
+				<h3>Images</h3>
+				<small>Step 4/4</small>
+			</div>
+			<div class="popup-wrapper">
+				<small>Configure images to show your center interior, comfort and vibe.</small>
+				<i class="far fa-question-circle trigger"></i>
+				<div class="hint">
+					<p>Add or remove images, please provide only real data. Do not rigg images!</p>
+				</div>
+			</div>
+			<label class="section-button" for="center-images-field">
+				<i class="far fa-plus"></i>&ensp;Add <span ng-show="centerImagesField.files.length > 0">([[centerImagesField.files.length]] images)</span>
+			</label>
+			<input type="file" accept="image/png, image/jpeg" multiple id="center-images-field" style="display: none;" onchange="angular.element(this).scope().$apply()">
+			<pre ng-show="owner.center.image_files.length == 0">You do not have any images yet, try adding some.</pre>
+			<form novalidate class="form-quarter" ng-hide="owner.center.image_files.length == 0">
+				<img ng-repeat="image in owner.center.image_files" ng-src="[[origin + image.path]]" ng-click="removeCenterImage(image)">
+			</form>
+			<hr>
+			<div class="action-container">
+				<button ng-disabled="loading" ng-click="editCenter()">
+					<i ng-if="!loading" class="far fa-floppy-disk">&ensp;</i>
+					<i ng-if="loading" class="far fa-spinner-third fa-spin">&ensp;</i>
+					Save
+				</button>
+			</div>
+		</section>
+	</div>
+</div>

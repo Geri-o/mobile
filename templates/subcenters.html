@@ -1,0 +1,53 @@
+<div id="controller-wrapper" ng-controller="subcenters">
+	<section id="loading-screen" ng-if="loading">
+		<div class="spinner-container">
+			<span><i class="fas fa-spinner-third fa-spin"></i>&ensp;[[loadingHint]]...</span>
+		</div>
+	</section>
+	<div class="sidebar">
+		<h3><i class="far fa-gamepad-modern"></i>&ensp;iCafePlay Panel</h3>
+		<ul>
+			<li ng-repeat="menu in menus" ng-show="menu.is_ready == owner.is_ready || menu.visible"><a href="#![[menu.route]]" ng-class="{'active-menu': menu.controller == controllerName}"><i class="[[menu.icon]]"></i>[[menu.name]]</a></li>
+		</ul>
+	</div>
+	<div class="content">
+		<nav>
+			<h3><i class="fas fa-building-flag"></i>&ensp;Subcenters</h3>
+			<div class="trailing">
+				<span><i class="far fa-user"></i>&emsp;[[owner.name]]</span>
+				<button ng-click="logout(owner)"><i class="far fa-power-off"></i>&emsp;Logout</button>
+			</div>
+		</nav>
+		<section>
+			<div class="meta-title">
+				<h3>Subcenters overview</h3>
+			</div>
+			<small>Here you can edit appearance of your subcafes.</small>
+			<table>
+				<tr>
+					<th width="10">Status</th>
+					<th width="200">iCafe name</th>
+					<th width="200">Display name</th>
+					<th width="200">Cafe ID</th>
+					<th width="200">Topups</th>
+					<th width="200">Booking</th>
+					<th width="200">License number</th>
+					<th width="10"></th>
+				</tr>
+				<tr ng-repeat="subcenter in owner.center.subcenters">
+					<td class="action-cell" ng-show="subcenter.configured"><i ng-click="explain(subcenter, 1)" class="far fa-check"></i></td>
+					<td class="action-cell" ng-hide="subcenter.configured"><i ng-click="explain(subcenter, 1)" class="far fa-xmark"></i></td>
+					<td>[[subcenter.name]]</td>
+					<td>[[subcenter.display_name]]</td>
+					<td>[[subcenter.cafe_id]]</td>
+					<td class="action-cell" ng-show="subcenter.allow_topup"><i ng-click="explain(subcenter, 2)" class="far fa-check"></i></td>
+					<td class="action-cell" ng-hide="subcenter.allow_topup"><i ng-click="explain(subcenter, 2)" class="far fa-xmark"></i></td>
+					<td class="action-cell" ng-show="subcenter.allow_booking"><i ng-click="explain(subcenter, 3)" class="far fa-check"></i></td>
+					<td class="action-cell" ng-hide="subcenter.allow_booking"><i ng-click="explain(subcenter, 3)" class="far fa-xmark"></i></td>
+					<td>[[subcenter.license_number]]</td>
+					<td class="action-cell"><i ng-click="gotoSubcenter(subcenter)" class="far fa-arrow-right-long"></i></td>
+				</tr>
+			</table>
+		</section>
+	</div>
+</div>
