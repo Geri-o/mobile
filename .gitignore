@@ -1,0 +1,11 @@
+hermetic
+hermetic/
+migrations
+migrations/
+__pycache__
+__pycache__/
+static/image_files
+static/image_files/
+
+event.log
+*.log
